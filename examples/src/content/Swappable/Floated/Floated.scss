@@ -86,4 +86,8 @@ $floated-block-name: unquote('Block');
       }
     }
   }
+
+  .draggable-mirror {
+    transition: width get-duration(fast) get-easing(), height get-duration(fast) get-easing();
+  }
 }

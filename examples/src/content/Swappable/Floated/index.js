@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies, import/no-unresolved */
-import {Swappable} from '@shopify/draggable';
+import {Swappable, Plugins} from '@shopify/draggable';
 /* eslint-enable import/no-extraneous-dependencies, import/no-unresolved */
 
 export default function Floated() {
@@ -14,6 +14,7 @@ export default function Floated() {
     mirror: {
       constrainDimensions: true,
     },
+    plugins: [Plugins.ResizeMirror],
   });
 
   return swappable;

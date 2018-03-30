@@ -67,29 +67,34 @@ export default class ResizeMirror extends AbstractPlugin {
    * @private
    */
   [onDragOver](dragEvent) {
-    requestAnimationFrame(
-      animateResize({
-        dragEvent,
-        draggableSelector: this.draggable.options.draggable,
-        originalSourceClassName: this.draggable.getClassNameFor('source:original'),
-      }),
-    );
-  }
-}
+    const originalSourceClassName = this.draggable.getClassNameFor('source:original');
+    let overElement;
 
-function animateResize({dragEvent, draggableSelector, originalSourceClassName}) {
-  return () => {
-    const overElement =
-      dragEvent.over || dragEvent.overContainer.querySelector(`${draggableSelector}:not(.${originalSourceClassName})`);
+    if (dragEvent.over && !dragEvent.over.classList.contains(originalSourceClassName)) {
+      overElement = dragEvent.over;
+    } else {
+      overElement = dragEvent.overContainer.querySelector(
+        `${this.draggable.options.draggable}:not(.${originalSourceClassName})`,
+      );
+    }
 
     if (!overElement) {
       return;
     }
 
-    const overRect = overElement.getBoundingClientRect();
     dragEvent.overContainer.appendChild(dragEvent.mirror);
 
-    dragEvent.mirror.style.width = `${overRect.width}px`;
-    dragEvent.mirror.style.height = `${overRect.height}px`;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(animateResize(dragEvent.mirror, overElement));
+    });
+  }
+}
+
+function animateResize(mirror, overElement) {
+  return () => {
+    const {width, height} = overElement.getBoundingClientRect();
+
+    mirror.style.width = `${width}px`;
+    mirror.style.height = `${height}px`;
   };
 }
